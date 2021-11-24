@@ -42,4 +42,7 @@ val mainPanel = panel {
         }
     }
 }
-registerProjectToolWindow("bb", component = mainPanel).show()
+registerProjectToolWindow(
+    "My Toolwindow",
+    component = mainPanel
+).show()

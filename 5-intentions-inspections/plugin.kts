@@ -31,24 +31,27 @@ import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
 
 // depends-on-plugin org.jetbrains.kotlin
 
+
 registerIntention(object : PsiElementBaseIntentionAction() {
     override fun isAvailable(project: Project, editor: Editor?, element: PsiElement) =
-        element.containingFile.fileType.defaultExtension == "kt" && element.text.contains("hello")
+        element.containingFile.fileType.defaultExtension == "kt"
+            && element.text.contains("hello")
 
     override fun invoke(project: Project, editor: Editor?, element: PsiElement) {
-        element.replace(KtPsiFactory(project).createLiteralStringTemplateEntry("hello world!"))
+        val newElement = KtPsiFactory(project).createLiteralStringTemplateEntry("hello world!")
+        element.replace(newElement)
     }
 
     override fun startInWriteAction() = true
-    override fun getText() = "Foo"
-    override fun getFamilyName() = "Foo"
+    override fun getText() = "Hello intention"
+    override fun getFamilyName() = "Hello"
 })
 
 registerInspection(object : AbstractKotlinInspection() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return expressionVisitor { expression: KtExpression ->
             if (expression is KtStringTemplateExpression && expression.text == "\"hello\"") {
-                holder.registerProblem(expression, "Found \"hello\"", HelloWorldQuickFix())
+                holder.registerProblem(expression, "Found \"hello\" !!!", HelloWorldQuickFix())
             }
         }
     }
