@@ -74,6 +74,8 @@ inner class MyQuickFix: LocalQuickFix {
 
 // -----------------------------------------
 
+registerInspection(ImportNestedReferenceInspectionForKotlin())
+
 class ImportNestedReferenceInspectionForKotlin : AbstractKotlinInspection() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return expressionVisitor { expression ->
