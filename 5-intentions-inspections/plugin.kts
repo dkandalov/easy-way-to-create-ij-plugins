@@ -35,43 +35,44 @@ import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
 registerIntention(object : PsiElementBaseIntentionAction() {
     override fun isAvailable(project: Project, editor: Editor?, element: PsiElement) =
         element.containingFile.fileType.defaultExtension == "kt"
-            && element.text.contains("hello")
+            && element.text.contains("OMG")
 
     override fun invoke(project: Project, editor: Editor?, element: PsiElement) {
-        val newElement = KtPsiFactory(project).createLiteralStringTemplateEntry("hello world!")
+        val newElement = KtPsiFactory(project).createLiteralStringTemplateEntry("🙀")
         element.replace(newElement)
     }
 
     override fun startInWriteAction() = true
-    override fun getText() = "Hello intention"
+    override fun getText() = "Replace with 🙀"
     override fun getFamilyName() = "Hello"
 })
+
+// -----------------------------------------
 
 registerInspection(object : AbstractKotlinInspection() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return expressionVisitor { expression: KtExpression ->
-            if (expression is KtStringTemplateExpression && expression.text == "\"hello\"") {
-                holder.registerProblem(expression, "Found \"hello\" !!!", HelloWorldQuickFix())
+            if (expression is KtStringTemplateExpression && expression.text == "\"!!\"") {
+                holder.registerProblem(expression, "Found !!", MyQuickFix())
             }
         }
     }
-    override fun getGroupDisplayName() = "Foo"
-    override fun getDisplayName() = "Fooooo"
-    override fun getShortName() = "Foo"
+    override fun getShortName() = "Usage of !!"
+    override fun getDisplayName() = "Usage of !!"
+    override fun getGroupDisplayName() = "Hello"
     override fun isEnabledByDefault() = true
 })
 
-inner class HelloWorldQuickFix: LocalQuickFix {
+inner class MyQuickFix: LocalQuickFix {
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        val stringLiteral = KtPsiFactory(descriptor.psiElement).createExpression("\"Hello World\"")
+        val stringLiteral = KtPsiFactory(descriptor.psiElement).createExpression("\"💥\"")
         descriptor.psiElement.replace(stringLiteral)
     }
-    override fun getName() = "Foo fix"
-    override fun getFamilyName() = "Foo"
+    override fun getName() = "Replace with 💥"
+    override fun getFamilyName() = "Hello"
 }
 
-
-
+// -----------------------------------------
 
 class ImportNestedReferenceInspectionForKotlin : AbstractKotlinInspection() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -86,12 +87,9 @@ class ImportNestedReferenceInspectionForKotlin : AbstractKotlinInspection() {
     override fun getGroupDisplayName() = "Live plugin"
     override fun isEnabledByDefault() = true
 
-    private val exclusions = listOf("Bar.BarB")
-
     private fun findNestedReferenceIn(expression: KtExpression): KtExpression? {
         if (expression !is KtDotQualifiedExpression) return null
         if (expression.parentOfType<KtImportDirective>() != null) return null
-        if (exclusions.any { expression.text.startsWith(it) }) return null
 
         val receiverRef = (expression.receiverExpression as? KtNameReferenceExpression) ?: return null
         val selectorRef = (expression.selectorExpression?.referenceExpression() as? KtNameReferenceExpression) ?: return null
