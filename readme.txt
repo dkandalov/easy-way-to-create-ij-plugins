@@ -105,3 +105,4 @@ X) Thoughts
     - nobody expects it to be easy
     - not much interest => not a lot of tooling
     - should be a cultural norm (maybe library/project specific plugins)
+ - video with samples https://www.youtube.com/watch?v=GcYa4lMRta0 
