@@ -7,9 +7,9 @@ import org.http4k.core.Request
 // add-to-classpath $PLUGIN_PATH/libs/*
 
 registerAction("Show Action Group", keyStroke = "alt shift .") { event ->
-    PopupActionGroup(
+    val actionGroup = PopupActionGroup(
         name = "Some Actions",
-        AnAction("LivePlugin on GitHub") {
+        AnAction("LivePlugin on GitHub") { anotherEvent ->
             openInBrowser("https://github.com/dkandalov/live-plugin")
         },
         AnAction("Run a Script") {
@@ -31,6 +31,7 @@ registerAction("Show Action Group", keyStroke = "alt shift .") { event ->
         AnAction("Open plugin.kts") {
             it.project?.openInEditor("$pluginPath/plugin.kts")
         }
-    ).createPopup(event.dataContext)
+    )
+    actionGroup.createPopup(event.dataContext)
         .showCenteredInCurrentWindow(event.project!!)
 }

@@ -10,8 +10,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiEnumConstant
 import com.intellij.psi.util.parentOfType
-import liveplugin.registerInspection
-import liveplugin.registerIntention
+import liveplugin.*
 import org.jetbrains.kotlin.idea.inspections.AbstractKotlinInspection
 import org.jetbrains.kotlin.idea.intentions.ImportMemberIntention
 import org.jetbrains.kotlin.nj2k.postProcessing.resolve
@@ -31,14 +30,13 @@ import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
 
 // depends-on-plugin org.jetbrains.kotlin
 
-
 registerIntention(object : PsiElementBaseIntentionAction() {
     override fun isAvailable(project: Project, editor: Editor?, element: PsiElement) =
-        element.containingFile.fileType.defaultExtension == "kt"
-            && element.text.contains("OMG")
+        element.parentOfType<KtStringTemplateExpression>() != null && element.text.contains("OMG")
 
     override fun invoke(project: Project, editor: Editor?, element: PsiElement) {
-        val newElement = KtPsiFactory(project).createLiteralStringTemplateEntry("🙀")
+        val newText = element.text.replace("OMG", "🙀")
+        val newElement = KtPsiFactory(element).createLiteralStringTemplateEntry(newText)
         element.replace(newElement)
     }
 
@@ -52,7 +50,7 @@ registerIntention(object : PsiElementBaseIntentionAction() {
 registerInspection(object : AbstractKotlinInspection() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return expressionVisitor { expression: KtExpression ->
-            if (expression is KtStringTemplateExpression && expression.text == "\"!!\"") {
+            if (expression is KtStringTemplateExpression && expression.text.contains("!!")) {
                 holder.registerProblem(expression, "Found !!", MyQuickFix())
             }
         }
@@ -65,8 +63,10 @@ registerInspection(object : AbstractKotlinInspection() {
 
 inner class MyQuickFix: LocalQuickFix {
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        val stringLiteral = KtPsiFactory(descriptor.psiElement).createExpression("\"💥\"")
-        descriptor.psiElement.replace(stringLiteral)
+        val element = descriptor.psiElement
+        val newText = element.text.replace("!!", "💥")
+        val newElement = KtPsiFactory(element).createExpression(newText)
+        element.replace(newElement)
     }
     override fun getName() = "Replace with 💥"
     override fun getFamilyName() = "Hello"
