@@ -1,48 +1,51 @@
+@file:Suppress("DialogTitleCapitalization")
+
 import com.intellij.openapi.ui.DialogPanel
-import com.intellij.ui.layout.GrowPolicy.MEDIUM_TEXT
-import com.intellij.ui.layout.panel
-import javax.swing.DefaultComboBoxModel
+import com.intellij.ui.dsl.builder.bindItemNullable
+import com.intellij.ui.dsl.builder.bindSelected
+import com.intellij.ui.dsl.builder.bindText
+import com.intellij.ui.dsl.builder.panel
 import liveplugin.registerProjectToolWindow
 import liveplugin.show
 
-data class Config(
-    var foo: Boolean = true,
-    var bar: String = "barrrr",
-    var quix: Int = 1
+data class PomodoroSettings(
+    var duration: Int? = 25,
+    var message: String = "Pomodoro is finished!",
+    var longBreak: Boolean = false
 )
 
-val config = Config()
-
-// https://plugins.jetbrains.com/docs/intellij/kotlin-ui-dsl.html
+val settings = PomodoroSettings()
 
 val panel: DialogPanel = panel {
-    row {
-        label("Sample text")
-        link("foo") { show("Clicked foo") }
-        browserLink("aaaaaaaa", "https://foo.com")
+    row("Duration:") {
+        comboBox(listOf(25, 30, 35, 40))
+            .bindItemNullable(settings::duration)
+        label("minute(s)")
     }
-    row {
-        label("Sample text")
-        checkBox("fooo", config::foo)
-        textField(config::bar, columns = 20).growPolicy(MEDIUM_TEXT)
+    row("Message:") {
+        textField().bindText(settings::message)
     }
-    row {
-        label("Sample text")
-        comboBox(DefaultComboBoxModel(arrayOf(1, 2, 3)), config::quix)
+    row("Long break:") {
+        checkBox("").bindSelected(settings::longBreak)
     }
 }
 val mainPanel = panel {
     row {
-        component(panel)
+        cell(panel)
     }
     row {
-        button("Submit") {
+        button("Save") {
             panel.apply()
-            show("Config: $config")
+            show(settings)
         }
+        browserLink(
+            text = "See docs for details",
+            url = "https://plugins.jetbrains.com/docs/intellij/kotlin-ui-dsl-version-2.html"
+        )
     }
 }
+
 registerProjectToolWindow(
-    "My Toolwindow",
+    toolWindowId = "Pomodoro Settings",
     component = mainPanel
 ).show()
