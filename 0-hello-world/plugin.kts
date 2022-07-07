@@ -6,6 +6,6 @@ import liveplugin.whenDisposed
 //show("pluginPath = $pluginPath")
 
 show("started")
-pluginDisposable.whenDisposed { 
+pluginDisposable.whenDisposed {
     show("disposed")
 }

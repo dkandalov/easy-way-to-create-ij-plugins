@@ -11,6 +11,23 @@ import liveplugin.show
 //project?.currentEditor?.caretModel?.moveToOffset(0)
 //project?.currentEditor?.selectionModel?.setSelection(0, 100)
 
+registerEditorAction("Random Case", "alt shift PERIOD") { editor, caret, _ ->
+    val document = editor.document
+    val offset = editor.caretModel.offset
+    val textAfter = document.text.drop(offset).takeWhile { it.isLetterOrDigit() }
+    val textBefore = document.text.take(offset).takeLastWhile { it.isLetterOrDigit() }
+    val text = (textBefore + textAfter)
+        .map { if (Random.nextBoolean()) it.uppercaseChar() else it.lowercaseChar() }
+        .joinToString(separator = "")
+
+    document.replaceString(
+        offset - textBefore.length,
+        offset + textAfter.length,
+        text
+    )
+}
+
+/*
 registerAction("Random Case", "alt shift PERIOD") { event ->
     val document = event.document
     val offset = event.editor?.caretModel?.offset
@@ -30,3 +47,4 @@ registerAction("Random Case", "alt shift PERIOD") { event ->
         }
     }
 }
+*/

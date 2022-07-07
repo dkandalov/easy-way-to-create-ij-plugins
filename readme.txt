@@ -105,4 +105,27 @@ X) Thoughts
     - nobody expects it to be easy
     - not much interest => not a lot of tooling
     - should be a cultural norm (maybe library/project specific plugins)
- - video with samples https://www.youtube.com/watch?v=GcYa4lMRta0 
+
+See also the blog post "Sane Intellij Plugin Development With Live Plugin" - https://dmitrykandalov.com/liveplugin
+
+Video with samples https://www.youtube.com/watch?v=GcYa4lMRta0
+Timecodes:
+1:46 - Intro (3 min -> 1 min)
+3:27 - Why?
+4:48 - Demo (5 min -> 1 min)
+8:22 - Demo: pluginDisposable
+10:41 - How it works? (4 min)
+14:22 - Notifications (5 min -> 1 min)
+19:20 - Notifications: yes/no, etc
+21:44 - Notifications: chat
+24:10 - Actions (14 min -> 10 min)
+28:28 - Actions: refactoring to AnAction class
+30:45 - Actions: ActionManager, delegate to other actions
+33:06 - Actions: ActionGroups
+42:00 - Actions: chat
+46:00 - Editor (11 min -> 5 min)
+55:55 - Intentions/Inspections (7 min -> 5 min)
+59:39 - Intentions/Inspections: inspection
+63:20 - Thoughts (4 min -> 2 min)
+67:07 - The end
+

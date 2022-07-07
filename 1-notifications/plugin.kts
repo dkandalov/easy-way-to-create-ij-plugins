@@ -1,6 +1,12 @@
+import com.intellij.notification.NotificationType.ERROR
 import liveplugin.*
 
+//show(Exception().stackTraceToString(), title = "!!!", notificationType = ERROR)
+//project?.showInConsole(Exception().stackTraceToString())
+//println("hello!!!")
+//logger.info("hello")
 
+//PluginUtil.inspect(project)
 
 /*
 val isYes = com.intellij.openapi.ui.showYesNoDialog(
